@@ -1,0 +1,6 @@
+[Module]
+Name=FightPlan
+Dependencies=minionlib,FFXIVMINION,TensorCore,AnyoneCore
+Version=1
+Files=FightPlan.lua,functions.lua,datagui.lua
+Enabled=1
