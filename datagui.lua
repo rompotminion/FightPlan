@@ -23,6 +23,9 @@ function ReactionHelper.Draw()
         ReactionHelper.fontScale = FightPlan.settings.dataGuiScale
     end
 
+    local g = FightPlan.gui
+    g.pushTheme()
+
     local window_flags = GUI.WindowFlags_AlwaysAutoResize
     ReactionHelper.visible, ReactionHelper.open = GUI:Begin("Data", ReactionHelper.open, window_flags)
 
@@ -55,9 +58,9 @@ function ReactionHelper.Draw()
             GUI:SetWindowFontScale(scale * 0.8)
             local mit_phys = FightPlan.Physical or 0
             local mit_magic = FightPlan.Magical or 0
-            GUI:TextColored(1.0, 0.639, 0.290, 1.0, string.format("%.1f%%", mit_phys))
+            g.coloredText(g.C.yellow, "%.1f%%", mit_phys)
             GUI:SameLine()
-            GUI:TextColored(0.145, 0.600, 0.745, 1.0, string.format("%.1f%%", mit_magic))
+            g.coloredText(g.C.lightblue, "%.1f%%", mit_magic)
         end
 
         local player = TensorCore.mGetPlayer()
@@ -73,13 +76,17 @@ function ReactionHelper.Draw()
         GUI:SetWindowFontScale(1.0)
         GUI:Separator()
         GUI:Text("Scale")
+        GUI:SameLine()
+        GUI:PushItemWidth(80)
         local newScale, changed = GUI:SliderFloat("##dataScale", scale, 0.5, 3.0)
+        GUI:PopItemWidth()
         if changed then
             ReactionHelper.fontScale = newScale
             RH_SaveScale()
         end
     end
     GUI:End()
+    g.popTheme()
 end
 
 function ReactionHelper.Init()

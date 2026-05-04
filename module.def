@@ -2,5 +2,5 @@
 Name=FightPlan
 Dependencies=minionlib,FFXIVMINION,TensorCore,AnyoneCore
 Version=1
-Files=FightPlan.lua,functions.lua,datagui.lua
+Files=FightPlan.lua,PartyPlan.lua,functions.lua,datagui.lua,fpGui.lua
 Enabled=1

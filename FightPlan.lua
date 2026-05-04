@@ -218,6 +218,9 @@ end
 function FightPlan.DrawTLDR()
     if FightPlan.settings.tldrAccepted or FightPlan._tldrDismissed then return end
 
+    local g = FightPlan.gui
+    g.pushTheme()
+
     local sw, sh = GUI:GetScreenSize()
     local winW = 600
     GUI:SetNextWindowSize(winW, 0, "Always")
@@ -227,9 +230,9 @@ function FightPlan.DrawTLDR()
         GUI:Text("Before using FightPlan, please read the following:")
         GUI:Separator()
         GUI:Dummy(0, 4)
-        GUI:Text("FightPlan is a prioprietary AddOn not optimized like Riku Products.")
-        GUI:Text("Read the entire discord thread before using the addon.")
-        GUI:Text("If you're using this without reading the thread, I will not provide you support and will probably block you!")
+        g.coloredText(g.C.text_dim, "%s", "FightPlan is a prioprietary AddOn not FPS optimized like Riku Products.")
+        g.coloredText(g.C.text_dim, "%s", "Read the entire discord thread before using the addon.")
+        g.coloredText(g.C.text_dim, "%s", "If you're using this without reading the thread, I will not provide you support and will probably block you!")
         GUI:Dummy(0, 8)
         GUI:Separator()
         GUI:Dummy(0, 4)
@@ -243,6 +246,7 @@ function FightPlan.DrawTLDR()
         end
     end
     GUI:End()
+    g.popTheme()
 end
 
 function FightPlan.Draw()
@@ -261,10 +265,22 @@ function FightPlan.Draw()
         return
     end
     LoadSettings()
+    local g = FightPlan.gui
+    g.pushTheme()
     GUI:SetNextWindowSize(0, 0, GUI.SetCond_Appearing)
     FightPlan.GUI.visible, FightPlan.GUI.open = GUI:Begin("FightPlan", FightPlan.GUI.open, GUI.WindowFlags_AlwaysAutoResize)
     if FightPlan.GUI.visible then
-        if not Player then GUI:End(); return end
+        if not Player then GUI:End(); g.popTheme(); return end
+
+        local partyOpen = PartyPlan and PartyPlan.GUI and PartyPlan.GUI.open or false
+        g.toggleButton("PartyPlan", "fpPartyBtn", partyOpen, function()
+            if PartyPlan and PartyPlan.GUI then
+                PartyPlan.GUI.open = not PartyPlan.GUI.open
+                PartyPlan.GUI.visible = PartyPlan.GUI.open
+            end
+        end, 80, g.UI.BTN_H)
+        GUI:Separator()
+
         local currentMapID = Player.localmapid
         local conflictGroup = FightPlan.mapPlanGroups[currentMapID]
 
@@ -286,8 +302,10 @@ function FightPlan.Draw()
             for i, name in ipairs(conflictGroup) do
                 if name == activePlan then selectedIdx = i; break end
             end
-            GUI:Text("Active Plan")
+            g.alignedLabel("Active Plan")
+            GUI:PushItemWidth(g.UI.INPUT_W)
             local newIdx, changed = GUI:Combo("##ActivePlan", selectedIdx, conflictGroup)
+            GUI:PopItemWidth()
             if changed then
                 FightPlan.settings.activePlan[currentMapID] = conflictGroup[newIdx]
                 SaveSettings()
@@ -295,7 +313,7 @@ function FightPlan.Draw()
             GUI:Separator()
         end
 
-        if not FightPlan.settings[Player.job] then GUI:End(); return end
+        if not FightPlan.settings[Player.job] then GUI:End(); g.popTheme(); return end
         local hasAnySettings = false
         for _, dropdown in ipairs(FightPlan.dropdowns) do
             local conditionMet = false
@@ -316,10 +334,11 @@ function FightPlan.Draw()
 
             if conditionMet then
                 hasAnySettings = true
-                GUI:Text(dropdown.label)
+                g.alignedLabel(dropdown.label)
                 if GUI:IsItemHovered() then
                     GUI:SetTooltip(dropdown.tooltip)
                 end
+                GUI:PushItemWidth(g.UI.INPUT_W)
                 if dropdown.id == "Role" then
                     local currentValue = FightPlan.settings[Player.job][dropdown.id]
                     local selectedIndex = 1
@@ -357,6 +376,7 @@ function FightPlan.Draw()
                         SaveSettings()
                     end
                 end
+                GUI:PopItemWidth()
             end
         end
         for _, checkbox in ipairs(FightPlan.checkboxes) do
@@ -395,10 +415,11 @@ function FightPlan.Draw()
         end
         if not hasAnySettings then
             local mapLabel = (GetMapName and GetMapName(Player.localmapid)) or tostring(Player.localmapid)
-            GUI:Text("No settings for " .. mapLabel)
+            g.coloredText(g.C.text_dim, "No settings for %s", mapLabel)
         end
     end
     GUI:End()
+    g.popTheme()
 end
 
 function FightPlan.Init()
