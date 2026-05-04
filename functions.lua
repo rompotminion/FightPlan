@@ -22,7 +22,11 @@ local jobMap = {
   }
   
   local function getJob(ent)
-    return ent and TensorCore.mGetEntity(ent).job or Player.job
+    if ent and TensorCore then
+      local entity = TensorCore.mGetEntity(ent)
+      if entity then return entity.job end
+    end
+    return Player and Player.job or 0
   end
   
   for jobName, jobId in pairs(jobMap) do
@@ -48,31 +52,43 @@ local jobMap = {
   end
   
   FightPlan.has2mPot = function()
+    if not Player or not In then return false end
     return In(Player.job, 20, 21, 22, 23, 24, 30, 31, 32, 34, 35, 37, 38, 39, 41)
   end
-  
+
   FightPlan.isMT = function()
-    return _G["ACR_" .. gACRSelectedProfiles[TensorCore.mGetPlayer().job] .. "_TankStance"] == "mt"
+    if not TensorCore or not gACRSelectedProfiles then return false end
+    local p = TensorCore.mGetPlayer()
+    if not p then return false end
+    local profile = gACRSelectedProfiles[p.job]
+    if not profile then return false end
+    return _G["ACR_" .. profile .. "_TankStance"] == "mt"
   end
-  
+
   FightPlan.isOT = function()
-    return _G["ACR_" .. gACRSelectedProfiles[TensorCore.mGetPlayer().job] .. "_TankStance"] == "ot"
+    if not TensorCore or not gACRSelectedProfiles then return false end
+    local p = TensorCore.mGetPlayer()
+    if not p then return false end
+    local profile = gACRSelectedProfiles[p.job]
+    if not profile then return false end
+    return _G["ACR_" .. profile .. "_TankStance"] == "ot"
   end
   
   FightPlan.potCD = function()
+    if not ActionList then return 0 end
     local pot = ActionList:Get(1, 846)
     return pot and math.floor((pot.cdmax - pot.cd) * 1000) or 0
   end
   
   FightPlan.assistOn = function()
-    if not FFXIV_Common_BotRunning then
+    if not FFXIV_Common_BotRunning and ml_global_information then
       ml_global_information.ToggleRun()
       d("[FightPlan] Assist On")
     end
   end
-  
+
   FightPlan.assistOff = function()
-    if FFXIV_Common_BotRunning then
+    if FFXIV_Common_BotRunning and ml_global_information then
       ml_global_information.ToggleRun()
       d("[FightPlan] Assist Off")
     end

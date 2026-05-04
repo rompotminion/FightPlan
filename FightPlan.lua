@@ -227,7 +227,8 @@ function FightPlan.DrawTLDR()
         GUI:Text("Before using FightPlan, please read the following:")
         GUI:Separator()
         GUI:Dummy(0, 4)
-        GUI:Text("FightPlan is a prioprietary AddOn not optimized well. Read the entire discord thread before using the addon.")
+        GUI:Text("FightPlan is a prioprietary AddOn not optimized like Riku Products.")
+        GUI:Text("Read the entire discord thread before using the addon.")
         GUI:Text("If you're using this without reading the thread, I will not provide you support and will probably block you!")
         GUI:Dummy(0, 8)
         GUI:Separator()
@@ -249,14 +250,13 @@ function FightPlan.Draw()
     checkAndUpdateRaidMaps()
 
     
-    fpRed.gradientIntensity = 0
-    fpGreen.gradientIntensity = 0
-    fpBlue.gradientIntensity = 0
-    fpYellow.gradientIntensity = 0
-    fpCyan.gradientIntensity = 0
-    fpPurple.gradientIntensity = 0
-    fpMagenta.gradientIntensity = 0
-    removeExpiredUnsafeZones()
+    if fpRed then fpRed.gradientIntensity = 0 end
+    if fpGreen then fpGreen.gradientIntensity = 0 end
+    if fpBlue then fpBlue.gradientIntensity = 0 end
+    if fpYellow then fpYellow.gradientIntensity = 0 end
+    if fpCyan then fpCyan.gradientIntensity = 0 end
+    if fpPurple then fpPurple.gradientIntensity = 0 end
+    if fpMagenta then fpMagenta.gradientIntensity = 0 end
     if not FightPlan.GUI.open then
         return
     end
@@ -264,6 +264,7 @@ function FightPlan.Draw()
     GUI:SetNextWindowSize(0, 0, GUI.SetCond_Appearing)
     FightPlan.GUI.visible, FightPlan.GUI.open = GUI:Begin("FightPlan", FightPlan.GUI.open, GUI.WindowFlags_AlwaysAutoResize)
     if FightPlan.GUI.visible then
+        if not Player then GUI:End(); return end
         local currentMapID = Player.localmapid
         local conflictGroup = FightPlan.mapPlanGroups[currentMapID]
 
@@ -294,6 +295,7 @@ function FightPlan.Draw()
             GUI:Separator()
         end
 
+        if not FightPlan.settings[Player.job] then GUI:End(); return end
         local hasAnySettings = false
         for _, dropdown in ipairs(FightPlan.dropdowns) do
             local conditionMet = false
@@ -392,7 +394,8 @@ function FightPlan.Draw()
             end
         end
         if not hasAnySettings then
-            GUI:Text("No settings for " .. GetMapName(Player.localmapid))
+            local mapLabel = (GetMapName and GetMapName(Player.localmapid)) or tostring(Player.localmapid)
+            GUI:Text("No settings for " .. mapLabel)
         end
     end
     GUI:End()
@@ -413,28 +416,39 @@ function FightPlan.Init()
     end
     InitializeDefaultSettings()
     LoadSettings()
-    ml_gui.ui_mgr:AddMember({
-        id = "FFXIVMINION##MENU_FightPlan",
-        name = "FightPlan",
-        onClick = function()
-            FightPlan.GUI.open = not FightPlan.GUI.open
-        end,
-        tooltip = "Reaction Settings"
-    }, "FFXIVMINION##MENU_HEADER")
-    fpRed = Argus2.ShapeDrawer:new(2046820607, nil, 2046820607, 4294967295, 1.5)
-    fpRed.gradientIntensity = 0
-    fpGreen = Argus2.ShapeDrawer:new(2046885639, nil, 2046885639, 4294967295, 1.5)
-    fpGreen.gradientIntensity = 0
-    fpBlue = Argus2.ShapeDrawer:new(2063542272, nil, 2063542272, 4294967295, 1.5)
-    fpBlue.gradientIntensity = 0
-    fpYellow = Argus2.ShapeDrawer:new(2046871039, nil, 2046871039, 4294967295, 1.5)
-    fpYellow.gradientIntensity = 0
-    fpCyan = Argus2.ShapeDrawer:new(2057633536, nil, 2057633536, 4294967295, 1.5)
-    fpCyan.gradientIntensity = 0
-    fpPurple = Argus2.ShapeDrawer:new(2063532106, nil, 2063532106, 4294967295, 1.5)
-    fpPurple.gradientIntensity = 0
-    fpMagenta = Argus2.ShapeDrawer:new(2063532277, nil, 2063532277, 4294967295, 1.5)
-    fpMagenta.gradientIntensity = 0
+    if ml_gui and ml_gui.ui_mgr then
+        ml_gui.ui_mgr:AddMember({
+            id = "FFXIVMINION##MENU_FightPlan",
+            name = "FightPlan",
+            onClick = function()
+                FightPlan.GUI.open = not FightPlan.GUI.open
+            end,
+            tooltip = "FightPlan is a Reaction settings menu system.",
+            texture    = GetStartupPath() ..
+                      [[\LuaMods\FightPlan\icon.png]],
+        }, "FFXIVMINION##MENU_HEADER")
+    end
+    if Argus2 and Argus2.ShapeDrawer then
+        fpRed     = Argus2.ShapeDrawer:new(2046820607, nil, 2046820607, 4294967295, 1.5)
+        fpGreen   = Argus2.ShapeDrawer:new(2046885639, nil, 2046885639, 4294967295, 1.5)
+        fpBlue    = Argus2.ShapeDrawer:new(2063542272, nil, 2063542272, 4294967295, 1.5)
+        fpYellow  = Argus2.ShapeDrawer:new(2046871039, nil, 2046871039, 4294967295, 1.5)
+        fpCyan    = Argus2.ShapeDrawer:new(2057633536, nil, 2057633536, 4294967295, 1.5)
+        fpPurple  = Argus2.ShapeDrawer:new(2063532106, nil, 2063532106, 4294967295, 1.5)
+        fpMagenta = Argus2.ShapeDrawer:new(2063532277, nil, 2063532277, 4294967295, 1.5)
+        fpRed.gradientIntensity = 0
+        fpGreen.gradientIntensity = 0
+        fpBlue.gradientIntensity = 0
+        fpYellow.gradientIntensity = 0
+        fpCyan.gradientIntensity = 0
+        fpPurple.gradientIntensity = 0
+        fpMagenta.gradientIntensity = 0
+    else
+        d("[FightPlan] WARNING: Argus2 not found — shape drawing disabled")
+        local stub = { gradientIntensity = 0 }
+        fpRed = stub; fpGreen = stub; fpBlue = stub
+        fpYellow = stub; fpCyan = stub; fpPurple = stub; fpMagenta = stub
+    end
 end
 
 local function loadConfigsFromFiles()
