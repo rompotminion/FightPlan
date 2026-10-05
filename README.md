@@ -54,7 +54,7 @@ Keep IDs, option order and storage modes stable once players have saved choices.
 
 ## Plan editor
 
-A browser editor builds plans without hand-writing Lua: add controls, set visibility and conditions, preview by job and map, then export the `.lua` file into `plans/`. It runs entirely in the browser, never executes imported scripts and never talks to the game.
+A browser editor builds plans without hand-writing Lua: drag and drop existing plan files onto it (or start a new one), add controls, set visibility and conditions, preview by job and map, then export the `.lua` file into `plans/`. It bundles no plans, keeps everything in your browser, never uploads a file, never executes imported scripts and never talks to the game.
 
 ## Reaction API
 
