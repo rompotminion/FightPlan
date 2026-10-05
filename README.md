@@ -2,6 +2,8 @@
 
 A Lua addon for FFXIVMinion that gives fight reactions per-job settings and a shared set of helpers. Plans define the toggles and dropdowns a player sees for a fight; reactions read the choices as plain values.
 
+Open the editor: https://rompotminion.github.io/FightPlan/
+
 ## Install
 
 Clone or copy this folder into `LuaMods` as `FightPlan`, then reload Lua. Requires `minionlib`, `FFXIVMINION`, `TensorCore` and `AnyoneCore`.
