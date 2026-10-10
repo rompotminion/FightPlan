@@ -31,6 +31,12 @@ return {
                             value = true,
                             result = true,
                         },
+                        {
+                            -- ACR4 profiles (e.g. TensorViper4) handle 2m pots themselves.
+                            type = "lua",
+                            expression = "not (Player and gACRSelectedProfiles and tostring(gACRSelectedProfiles[Player.job] or ''):find('4$') ~= nil)",
+                            result = true,
+                        },
                     },
                 },
             },
