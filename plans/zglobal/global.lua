@@ -1,42 +1,68 @@
-local multiRefObjects = {
-}
-
-local config = {
-    
-    dropdowns = {
+-- FightPlan profile. Add a control to the controls list.
+return {
+    version = 2,
+    name = "Global Settings",
+    controls = {
         {
-            label = "Select Role",
-            id = "Role",
-            options = {"M1", "M2", "R1", "R2", "MT", "OT", "H1", "H2"},
-            useIndex = false,
-            tooltip = "Select your role.",
-            condition = function()
-                return FightPlan.RaidMaps[Player.localmapid]
-            end
-        }
-    },
-    
-    checkboxes = {
+            type = "toggle",
+            id = "autoMarker",
+            label = "Auto Marker",
+            tooltip = "Enables Auto Marker.",
+            showOn = "autoMarker",
+        },
         {
-            label = "Use Pot",
+            type = "toggle",
             id = "usePot",
+            label = "Potion",
             tooltip = "Determines whether or not Potion toggle enables on prepull.",
         },
         {
-            label = "Two Minute Pot",
+            type = "toggle",
             id = "twoMinPot",
+            label = "2m Potion",
             tooltip = "Changes the first potion to be at the second 2m window.",
+            conditions = {
+                {
+                    type = "all",
+                    checks = {
+                        {
+                            type = "boolean",
+                            variable = "FightPlan.usePot",
+                            value = true,
+                            result = true,
+                        },
+                    },
+                },
+            },
         },
         {
-            label = "Technical Opener",
+            type = "toggle",
             id = "techOpener",
-            tooltip = "Opens with Technical instead of Standard",
-            condition = function ()
-                return FightPlan.isDNC()
-                
-            end
-        }
-    }
+            label = "Tech Opener",
+            tooltip = "Opens with Technical instead of Standard.",
+            showFor = {"DNC"},
+        },
+        {
+            type = "toggle",
+            id = "tradePersonal",
+            label = "Trade Personals",
+            tooltip = "Trade your personal (25s) cooldowns with co-tank.",
+            showFor = {"Tank"},
+            showOn = "raid",
+        },
+        {
+            type = "toggle",
+            id = "altMit",
+            label = "Alt Mitigation",
+            tooltip = "Uses alternative mitigation timeline.",
+            showFor = {"Melee", "Tank", "Caster"},
+            showOn = "raid",
+        },
+        {
+            type = "toggle",
+            id = "Debug",
+            label = "Debug",
+            tooltip = "Enables Debug Draws and Mechanics Information.",
+        },
+    },
 }
-
-return config

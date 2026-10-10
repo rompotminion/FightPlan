@@ -1,6 +1,6 @@
 [Module]
 Name=FightPlan
-Dependencies=minionlib,FFXIVMINION,TensorCore,AnyoneCore
+Dependencies=minionlib,FFXIVMINION,TensorCore
 Version=1
-Files=FightPlan.lua,PartyPlan.lua,functions.lua,datagui.lua,fpGui.lua
+Files=planSchema.lua,FightPlan.lua,PartyPlan.lua,partyplanProgress.lua,partyplanCompat.lua,partyplanAuto.lua,functions.lua,datagui.lua,fpGui.lua,dedo.lua
 Enabled=1
