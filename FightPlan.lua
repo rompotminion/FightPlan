@@ -76,6 +76,7 @@ FightPlan.paths.plansDir     = FightPlan.paths.addonDir .. [[\plans]]
 FightPlan.paths.settingsDir  = FightPlan.paths.addonDir .. [[\Settings]]
 FightPlan.paths.settingsFile = FightPlan.paths.settingsDir .. [[\Shared.lua]]
 FightPlan.paths.partyLegacyDir = FightPlan.paths.settingsDir .. [[\Party\Legacy]]
+FightPlan.paths.soundsDir    = FightPlan.paths.settingsDir .. [[\Sounds]]
 
 -- Older builds kept settings.lua and partySavedFiles\ in the addon root.
 -- tools\DataMigrate.ps1 moves them (and stray root files) into Settings\.

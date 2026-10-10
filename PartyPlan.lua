@@ -700,7 +700,11 @@ function PartyPlan.DrawDefaults()
         return
     end
     local defaults=PartyPlan.GetDefaults()
-    g.captionDivider("Role Detection")
+    g.captionDivider("Plans")
+    g.formRow("Plan Editor", "Edit this install's plan files in game; saving reloads FightPlan.", function()
+        if GUI:Button((FightPlan.Editor.IsOpen() and "Close" or "Open").." Editor##PPEditor", g.UI.INPUT_W, g.UI.ROW_H) then FightPlan.Editor.Toggle() end
+    end)
+    g.sectionHeader("Role Detection")
     local auto, autoChanged = g.formBool("Auto Detection", "In an eight-player raid, accept each player's first chat role claim. Manual assignments take priority.",
         "PPAuto", FightPlan.settings.partyPlanAutoDetection == true)
     if autoChanged then
@@ -1341,12 +1345,30 @@ function PartyPlan.findBestCoordinate(targets, radius, scanCenter, scanRadius, n
     return bestCoordinate
 end
 
+-- User-supplied soundengine.exe and sound files live in Settings\Sounds (never deployed).
 function PartyPlan.playSound(sound)
-    local soundPath = modPath..[[sounds\]]
-    if FileExists(soundPath..sound) then
-        local p = io.popen(soundPath.."soundengine.exe "..soundPath..sound)
-        p:close()
+    local dir = FightPlan.paths.soundsDir
+    local engine = dir .. [[\soundengine.exe]]
+    local file = dir .. [[\]] .. tostring(sound)
+    if type(sound) ~= "string" or sound == "" then
+        d("[FightPlan] playSound ERROR: sound must be a filename, got " .. tostring(sound))
+        return false
     end
+    if not FileExists(engine) then
+        d("[FightPlan] playSound ERROR: missing " .. engine)
+        return false
+    end
+    if not FileExists(file) then
+        d("[FightPlan] playSound ERROR: missing " .. file)
+        return false
+    end
+    local p, err = io.popen('"' .. engine .. '" "' .. file .. '"')
+    if not p then
+        d("[FightPlan] playSound ERROR: io.popen failed for " .. file .. ": " .. tostring(err))
+        return false
+    end
+    p:close()
+    return true
 end
 function PartyPlan.startRecording(commandLocation,ip,savePath,debug)
     local date = os.date("*t");

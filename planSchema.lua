@@ -6,7 +6,7 @@ for word in string.gmatch("DPS Melee Caster Ranged Tank Healer Regen Shield Supp
     audiences[word] = true
 end
 local reserved = {}
-for word in string.gmatch("GUI Groups currentJob settings paths MigrateDataLayout Food RoleIndex RoleToIndex version lastMapId RaidMaps ultimateRaidMaps DebugMaps AutoMarker HectorStrats mapPlanGroups IO gui dropdowns checkboxes controls plans Init Draw DrawTLDR Physical Magical Mitigation MitigationBuffs assistOn assistOff qt hb tb hl has2mPot hasDoTBL potCD", "%S+") do reserved[word] = true end
+for word in string.gmatch("GUI Groups currentJob settings paths MigrateDataLayout Editor Food RoleIndex RoleToIndex version lastMapId RaidMaps ultimateRaidMaps DebugMaps AutoMarker HectorStrats mapPlanGroups IO gui dropdowns checkboxes controls plans Init Draw DrawTLDR Physical Magical Mitigation MitigationBuffs assistOn assistOff qt hb tb hl has2mPot hasDoTBL potCD", "%S+") do reserved[word] = true end
 
 local function fail(source, message)
     error("[FightPlan.Schema] " .. tostring(source) .. ": " .. message, 0)
